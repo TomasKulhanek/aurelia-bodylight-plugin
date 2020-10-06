@@ -68,20 +68,17 @@
     "port": 9000,
     "host": "localhost",
     "open": false,
-    "index": "index.html",
-    "baseDir": ".",
-    "output": "scripts"
+    "index": "docs/index.html",
+    "baseDir": "docs/",
+    "output": "docs/scripts"
   },
   "build": {
-    "copyFiles": {
-        "node_modules/font-awesome/fonts/*": "fonts/"
-      },
     "targets": [
       {
         "port": 9000,
-        "index": "index.html",
-        "baseDir": ".",
-        "output": "scripts"
+        "index": "docs/index.html",
+        "baseDir": "docs/",
+        "output": "docs/scripts"
       }
     ],
     "options": {
@@ -114,9 +111,9 @@
       }
     ],
     "copyFiles": {
-      "node_modules/font-awesome/fonts/*": "font-awesome/fonts"
+      "node_modules/@iktakahiro/markdown-it-katex/node_modules/katex/dist/fonts/*": "docs/fonts/",
+      "node_modules/font-awesome/fonts/*": "docs/font-awesome/fonts/"
     },
-
     "loader": {
       "type": "require",
       "configTarget": "bodylight.bundle.js",

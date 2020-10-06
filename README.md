@@ -1,184 +1,109 @@
-# `aurelia-bodylight-plugin`
+# Aurelia plugin with Bodylight web components 
+[![Build Status](https://travis-ci.com/creative-connections/aurelia-bodylight-plugin.svg?branch=master)](https://travis-ci.com/creative-connections/aurelia-bodylight-plugin)
+ [![Project stage: Development][project-stage-badge: Development]][project-stage-page]
 
+[project-stage-badge: Development]: https://img.shields.io/badge/Project%20Stage-Development-yellowgreen.svg
+[project-stage-page]: https://blog.pother.ca/project-stages/
+
+Web Components is a suite of different technologies allowing you to create reusable custom elements — with their functionality encapsulated away from the rest of the code. More info at [1].
+Web components of the Bodylight library are exported as custom elements enhancing web documents with 
+* FMU component able to execute `Modelica` (not only) model simulation exported to `FMU` using FMI standard.
+* Adobe-Animate and Gif-Animate component able to control animation exported from Adobe-Animate or animated GIF and bind them to model simulation.
+* ChartJS and DygraphJS components to visualise model variables in different chart types.
+
+All bodylight web components are registered with a bdl- prefix. Components are defined in source code without the prefix, which may be used to build application internally in an aurelia framework. However, web components way is the preferred standard way.
+
+This plugin is part of broader tools to enable in-browser simulation using modern web technologies: Web Assembly, HTML, Javascript (ECMAScript6).
+
+# Usage
+
+This plugin is distributed in 2 different way: 1) as standard web components or 2) as aurelia components.
+* **1. Standard web components** - follow [Bodylight.js-Components](https://github.com/creative-connections/Bodylight.js-Components) to create web simulator using HTML or Markdown or mor complex application using different framework. 
+* **2. Aurelia web components** - follow this section to build more complex interactive application using bodylight plugin   
+
+## 1. Standard web components
+
+follow [Bodylight.js-Components](https://github.com/creative-connections/Bodylight.js-Components) to create web simulator using HTML or Markdown.
+
+## 2. Aurelia web components
+
+We recommend to use [aurelia](https://aurelia.io) framework to build web application with Bodylight Web components.
+Follow Aurelia doc's how to prepare your project and  install `aurelia-bodylight-plugin` by `npm` command-line:
+```bash
+npm i aurelia-bodylight-plugin
+```
+
+In your `main.js` file enable the plugin by `aurelia.use.plugin(PLATFORM.moduleName('aurelia-bodylight-plugin'))`, so it may look like:
+```javascript
+//main.js
+import {PLATFORM} from 'aurelia-pal';
+
+export function configure(aurelia) {
+  aurelia.use
+    .standardConfiguration()
+    .plugin(PLATFORM.moduleName('aurelia-bodylight-plugin'))
+
+  aurelia.start().then(() => {
+    aurelia.setRoot(PLATFORM.moduleName('app'));
+  });
+}
+```
+Bodylight web components are available in any template, use them without `bdl-` prefix:
+```html
+<template>
+  <range id="id1" min="40" max="180" default="60" title="Heart rate"></range>
+  <fmi ...></fmi>
+  <chartjs ...></chartjs>
+...
+</template>
+```
+## Reference manual
+For further doc refer `docs/` 
+
+## Developer's guide
+
+To Build and test
+* `au build-plugin` - builds plugin - outpu to `dist`
+* `au build` - builds dev-app with documentation - output to `/script`
+* `au test` - execute unit tests
+
+To publish NPM package version [NPM aurelia-bodylight-plugin](https://www.npmjs.com/package/aurelia-bodylight-plugin)
+* `npm login` - logs into NPM - need to be contributor for  
+* `np` - UI for release the new version (will ask for patch,minor or major version)
+
+### Add new component
+To add a new web component:
+* create a component definition in src/components, either only HTML or HTML and JS
+* register the component as a web component in src/webcomponents.js adding a row
+```javascript
+export function configure(aurelia) {
+  aurelia.use
+  ...
+  //use this routine to register HTML only component as web component
+  .globalResources(PLATFORM.moduleName('components/mycomponent.html'))
+  //use this routine to register component (JS and HTML) as web component
+  .globalResources(PLATFORM.moduleName('components/mycomponent'))
+  ...
+```
+
+* create documentation in `docs`
+* create unit test in `test` 
+* build plugin `au build-plugin` and build dev-app with docs using `au build` and see `docs/index.html` 
+
+## Release history
+### release notes 1.0.2
+* consolidated docs and tests
+### release notes 0.3
+* removed unused packages
+* created npm package aurelia-bodylight-plugin - can be installed using 
+```
+npm -i aurelia-bodylight-plugin
+```
 ### release notes 0.2
 * aurelia templating left as is
-* all elements renamed without bdl- prefix,
-* aurelia-web-components patched with 'mandatory prefix' option
+* all elements renamed, do not have bdl- prefix or Bdl* in name,
+* aurelia-web-components patched with 'forcePrefix' option to have consistent prefix for all web components
 ### release notes 0.1
 * aurelia-templating throws 'behaviorInstruction' is undefined - need to patch from `\patch` directory
 * bdl-markdown-book index and summary attributes are not reflected
 
-## Installation
-
-npm i https://github.com/creative-connections/aurelia-bodylight-plugin
-
-## introduction
-
-This project is bootstrapped by [aurelia-cli](https://github.com/aurelia/cli).
-
-This Aurelia plugin project has a built-in dev app (with CLI built-in bundler and RequireJS) to simplify development.
-
-1. The local `src/` folder, is the source code for the plugin.
-2. The local `dev-app/` folder, is the code for the dev app, just like a normal app bootstrapped by aurelia-cli.
-3. You can use normal `au run` and `au test` in development just like developing an app.
-4. You can use aurelia-testing to test your plugin, just like developing an app.
-5. To ensure compatibility to other apps, always use `PLATFORM.moduleName()` wrapper in files inside `src/`. You don't need to use the wrapper in `dev-app/` folder as CLI built-in bundler supports module name without the wrapper.
-
-Note aurelia-cli doesn't provide a plugin skeleton with Webpack setup (not yet), but this plugin can be consumed by any app using Webpack, or CLI built-in bundler, or jspm.
-
-## How to write an Aurelia plugin
-
-For a full length tutorial, visit [Aurelia plugin guide](https://aurelia.io/docs/plugins/write-new-plugin).
-
-Here is some basics. You can create new custom element, custom attribute, value converter or binding behavior manually, or use command `au generate` to help.
-```shell
-au generate element some-name
-au generate attribute some-name
-au generate value-converter some-name
-au generate binding-behavior some-name
-```
-
-By default, the cli generates command generates files in following folders:
-```
-src/elements
-src/attributes
-src/value-converters
-src/binding-behaviors
-```
-
-Note the folder structure is only to help you organising the files, it's not a requirement of Aurelia. You can manually create new element (or other thing) anywhere in `src/`.
-
-After you added some new file, you need to register it in `src/index.js`. Like this:
-```js
-config.globalResources([
-  // ...
-  PLATFORM.moduleName('./path/to/new-file-without-ext')
-]);
-````
-
-The usage of `PLATFORM.moduleName` wrapper is mandatory. It's needed for your plugin to be consumed by any app using webpack, CLI built-in bundler, or jspm.
-
-## Resource import within the dev app
-
-In dev app, when you need to import something from the inner plugin (for example, importing a class for dependency injection), use special name `"resources"` to reference the inner plugin.
-
-```js
-import {inject} from 'aurelia-framework';
-// "resources" refers the inner plugin src/index.js
-import {MyService} from 'resources';
-
-@inject(MyService)
-export class App {
-  constructor(myService) {
-    this.myService = myService;
-  }
-}
-```
-
-## Manage dependencies
-
-By default, this plugin has no "dependencies" in package.json. Theoretically this plugin depends on at least `aurelia-pal` because `src/index.js` imports it. It could also depends on more core Aurelia package like `aurelia-binding` or `aurelia-templating` if you build advanced components that reference them.
-
-Ideally you need to carefully add those `aurelia-pal` (`aurelia-binding`...) to "dependencies" in package.json. But in practice you don't have to. Because every app that consumes this plugin will have full Aurelia core packages installed.
-
-Furthermore, there are two benefits by leaving those dependencies out of plugin's package.json.
-1. ensure this plugin doesn't bring in a duplicated Aurelia core package to consumers' app. This is mainly for app built with webpack. We had been hit with `aurelia-binding` v1 and v2 conflicts due to 3rd party plugin asks for `aurelia-binding` v1.
-2. reduce the burden for npm/yarn when installing this plugin.
-
-If you are a perfectionist who could not stand leaving out dependencies, I recommend you to add `aurelia-pal` (`aurelia-binding`...) to "peerDependencies" in package.json. So at least it could not cause a duplicated Aurelia core package.
-
-If your plugin depends on other npm package, like `lodash` or `jquery`, **you have to add them to "dependencies" in package.json**.
-
-## Build Plugin
-
-Run `au build-plugin`. This will transpile all files from `src/` folder to `dist/native-modules/` and `dist/commonjs/`.
-
-For example, `src/index.js` will become `dist/native-modules/index.js` and `dist/commonjs/index.js`.
-
-Note all other files in `dev-app/` folder are for the dev app, they would not appear in the published npm package.
-
-## Consume Plugin
-
-By default, the `dist/` folder is not committed to git. (We have `/dist` in `.gitignore`). But that would not prevent you from consuming this plugin through direct git reference.
-
-You can consume this plugin directly by:
-```shell
-npm i github:your_github_username/plugin1
-# or if you use bitbucket
-npm i bitbucket:your_github_username/plugin1
-# or if you use gitlab
-npm i gitlab:your_github_username/plugin1
-# or plain url
-npm i https:/github.com/your_github_username/plugin1.git
-```
-
-Then load the plugin in app's `webcomponents.js` like this.
-```js
-aurelia.use.plugin('plugin1');
-// for webpack user, use PLATFORM.moduleName wrapper
-aurelia.use.plugin(PLATFORM.moduleName('plugin1'));
-```
-
-The missing `dist/` files will be filled up by npm through `"prepare": "npm run build"` (in `"scripts"` section of package.json).
-
-Yarn has a [bug](https://github.com/yarnpkg/yarn/issues/5235) that ignores `"prepare"` script. If you want to use yarn to consume your plugin through direct git reference, remove `/dist` from `.gitignore` and commit all the files. Note you don't need to commit `dist/` files if you only use yarn to consume this plugin through published npm package (`npm i plugin1`).
-
-## Publish npm package
-
-By default, `"private"` field in package.json has been turned on, this prevents you from accidentally publish a private plugin to npm.
-
-To publish the plugin to npm for public consumption:
-
-1. Remove `"private": true,` from package.json.
-2. Pump up project version. This will run through `au test` (in "preversion" in package.json) first.
-```shell
-npm version patch # or minor or major
-```
-3. Push up changes to your git server
-```shell
-git push && git push --tags
-```
-4. Then publish to npm, you need to have your npm account logged in.
-```shell
-npm publish
-```
-
-## Automate changelog, git push, and npm publish
-
-You can enable `npm version patch # or minor or major` to automatically update changelog, push commits and version tag to the git server, and publish to npm.
-
-Here is one simple setup.
-1. `npm i -D standard-changelog`. We use [`standard-changelog`](https://github.com/conventional-changelog/conventional-changelog) as a minimum example to support conventional changelog.
-  * Alternatively you can use high level [standard-version](https://github.com/conventional-changelog/standard-version).
-2. Add two commands to `"scripts"` section of package.json.
-```
-"scripts": {
-  // ...
-  "version": "standard-changelog && git add CHANGELOG.md",
-  "postversion": "git push && git push --tags && npm publish"
-},
-```
-3. you can remove `&& npm publish` if your project is private
-
-For more information, go to https://aurelia.io/docs/cli/cli-bundler
-
-## Run dev app
-
-Run `au run`, then open `http://localhost:9000`
-
-To open browser automatically, do `au run --open`.
-
-To change dev server port, do `au run --port 8888`.
-
-To change dev server host, do `au run --host 127.0.0.1`
-
-To install new npm packages automatically, do `au run --auto-install`
-
-**PS:** You could mix all the flags as well, `au run --host 127.0.0.1 --port 7070 --open`
-
-
-## Unit tests
-
-Run `au test` (or `au jest`).
-
-To run in watch mode, `au test --watch` or `au jest --watch`.

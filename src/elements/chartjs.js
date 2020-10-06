@@ -40,7 +40,7 @@ export class Chartjs {
       this.chart.update();
     };
     this.handleReset = e => {
-      console.log('handlereset');
+      //console.log('handlereset');
       this.resetdata();
       this.chart.update();
     };
@@ -102,7 +102,7 @@ export class Chartjs {
     for (let i = 0; i < this.refvalues; i++) {
       if (!this.mydata[i]) {
         //this.mydata.push(0);
-        console.log('chartjs no data');
+        //console.log('chartjs no data');
       }
       this.colors.push(this.selectColor(i));
     }
@@ -172,7 +172,7 @@ export class Chartjs {
     }
 
     if (typeof this.maxdata === 'string') {
-      this.maxdata = parseInt(this.maxdata);
+      this.maxdata = parseInt(this.maxdata, 10);
     }
 
     //if sections are requested - define chartjs plugin to draw it in background
@@ -186,11 +186,17 @@ export class Chartjs {
    */
   attached() {
     //listening to custom event fmidata and fmireset
-    document.getElementById(this.fromid).addEventListener('fmidata', this.handleValueChange);
-    document.getElementById(this.fromid).addEventListener('fmireset', this.handleReset);
-    //this.chartcanvas; - reference to the DOM canvas
-    if (this.sectionid) {document.getElementById(this.sectionid).addEventListener('addsection', this.handleAddSection);}
+    const fromel = document.getElementById(this.fromid);
+    if (fromel) {
+      fromel.addEventListener('fmidata', this.handleValueChange);
+      fromel.addEventListener('fmireset', this.handleReset);
+    } else {console.log('chartjs WARNING, null fromid element');}
 
+    if (this.sectionid) {
+      const sectionel = document.getElementById(this.sectionid);
+      if (sectionel) sectionel.addEventListener('addsection', this.handleAddSection);
+      else console.log('chartjs WARNING, null sectionid element');
+    }
 
     //for verticalline option - register controller for BdlChartjs
     if (this.verticalline) {
